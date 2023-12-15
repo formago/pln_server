@@ -1,16 +1,22 @@
 import express, { Request, Response } from 'express';
+import axios from 'axios';
 
 const app = express();
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 3000;
 
-app.get('/', (_req: Request, res: Response) => {
-  return res.send('Express Typescript on Vercel');
-});
-
-app.get('/ping', (_req: Request, res: Response) => {
-  return res.send('pong 🏓');
+// Проксирующий запрос к API для получения курсов валют
+app.get('/rates', async (req: Request, res: Response) => {
+  try {
+    const response = await axios.get(
+      'https://api.nbp.pl/api/exchangerates/tables/A/',
+    );
+    res.json(response.data);
+  } catch (error) {
+    // Обработка ошибок запроса
+    res.status(500).json({ error: error.message });
+  }
 });
 
 app.listen(port, () => {
-  return console.log(`Server is listening on ${port}`);
+  console.log(`Server is running on port ${port}`);
 });
