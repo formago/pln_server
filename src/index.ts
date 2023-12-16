@@ -1,8 +1,15 @@
 import express, { Request, Response } from 'express';
 import axios from 'axios';
+import ratesRoutes from './routes/ratesRoutes';
 
 const app = express();
 const port = process.env.PORT || 3000;
+
+// Парсинг JSON и URL-encoded данных
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.use('/api/rates', ratesRoutes);
 
 // Проксирующий запрос к API для получения курсов валют
 app.get('/rates', async (req: Request, res: Response) => {
@@ -20,3 +27,5 @@ app.get('/rates', async (req: Request, res: Response) => {
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
+
+export default app;
